@@ -33,13 +33,13 @@ Dockerfile                   # Docker setup for the project
 
 ## Setup
 ### Using Docker (Recommended)
-1. Build the Docker image:
+1. Build the Docker image (for Raspberry Pi/ARM):
    ```sh
-   docker build -t isro-missions .
+   docker build --build-arg "MAINTAINER=jamesmortensen" --build-arg "REPO=geckodriver-arm-binaries" --build-arg "GECKODRIVER_VERSION=v0.34.0" --build-arg "ARCH=linux-armv7l" -t isro-mission-checker:linux-armv7l .
    ```
 2. Run the Docker container (local build):
    ```sh
-   docker run -it isro-missions
+   docker run -it shankershawn/isro-mission-checker:linux-armv7l
    ```
 3. Or run the prebuilt image from Docker Hub:
    ```sh
