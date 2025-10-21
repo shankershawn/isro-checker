@@ -9,6 +9,7 @@ import logging
 from selenium.webdriver.firefox.service import Service
 
 from loggers import NoDuplicateLogger
+from util import EmailUtils
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -41,6 +42,7 @@ def invoke_isro():
             cache_data(next_isro_mission)
             cached_next_isro_mission = next_isro_mission
             mission_div_element.screenshot("mission.png")
+            EmailUtils.sendMail(next_isro_mission)
         else:
             no_duplicate_logger.info("No change in next ISRO mission")
     except Exception as e:
@@ -58,7 +60,7 @@ def cache_data(data):
 
 
 try:
-    seconds = 5
+    seconds = 600
     no_duplicate_logger.info(f"Starting scheduler to invoke ISRO every {seconds} seconds")
     schedule.every(seconds).seconds.do(invoke_isro)
     while True:
