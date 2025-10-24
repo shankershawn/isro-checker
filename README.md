@@ -41,16 +41,16 @@ com/
 #### For Raspberry Pi/ARM:
 ```sh
 docker build --build-arg "MAINTAINER=jamesmortensen" --build-arg "REPO=geckodriver-arm-binaries" --build-arg "GECKODRIVER_VERSION=v0.34.0" --build-arg "ARCH=linux-armv7l" -t shankershawn/isro-mission-checker:linux-armv7l .
-docker run -it shankershawn/isro-mission-checker:linux-armv7l
+docker run --restart always -e "GMAIL_USERNAME=abc@gmail.com" -e "GMAIL_PASSWORD=***" -it shankershawn/isro-mission-checker:linux-armv7l
 ```
 #### For Linux x86_64:
 ```sh
 docker build --build-arg "MAINTAINER=mozilla" --build-arg "REPO=geckodriver" --build-arg "GECKODRIVER_VERSION=v0.34.0" --build-arg "ARCH=linux64" -t shankershawn/isro-mission-checker:linux64 .
-docker run -it shankershawn/isro-mission-checker:linux64
+docker run --restart always -e "GMAIL_USERNAME=abc@gmail.com" -e "GMAIL_PASSWORD=***" -it shankershawn/isro-mission-checker:linux64
 ```
 #### Or run the prebuilt image from Docker Hub:
 ```sh
-docker run shankershawn/isro-mission-checker:latest
+docker run --restart always -e "GMAIL_USERNAME=abc@gmail.com" -e "GMAIL_PASSWORD=***" shankershawn/isro-mission-checker:latest
 ```
 
 ### Local Setup (Advanced)
