@@ -7,6 +7,12 @@ ARG REPO
 ARG GECKODRIVER_VERSION
 ARG ARCH
 
+ENV REDIS_HOST=144.24.128.195
+ENV REDIS_PORT=8082
+ENV GMAIL_USERNAME=shankershawn@gmail.com
+ENV GMAIL_PASSWORD=xxx
+ENV TO_EMAIL=shankarsan.ganai@icloud.com
+
 RUN wget https://github.com/$MAINTAINER/$REPO/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-$ARCH.tar.gz \
     && tar -xvzf geckodriver-$GECKODRIVER_VERSION-$ARCH.tar.gz \
     && mv geckodriver /usr/local/bin/ \
@@ -17,5 +23,5 @@ RUN pip install --upgrade pip
 RUN pip install selenium redis schedule selenium-firefox
 
 COPY . .
-
-CMD python com/shankarsan/isro/mission-checker.py
+WORKDIR com/shankarsan/isro/
+CMD python mission-checker.py --redis-host $REDIS_HOST --redis-port $REDIS_PORT --gmail-username $GMAIL_USERNAME --gmail-password "$GMAIL_PASSWORD" --to-email $TO_EMAIL

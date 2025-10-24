@@ -3,18 +3,15 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 
-# Email account credentials
-sender_email = 'shankershawn@gmail.com'
-receiver_email = 'shankarsan.ganai@icloud.com'
-password = 'gxyj dswr aftp dbvn'
+from loggers.NoDuplicateLogger import no_duplicate_logger
 
 
-def sendMail(verbiage):
+def sendMail(verbiage, subject, from_addr, from_pass, to_addr):
     # Create the message
     msg = MIMEMultipart('related')
-    msg['Subject'] = 'ISRO has a new launch scheduled'
-    msg['From'] = sender_email
-    msg['To'] = receiver_email
+    msg['Subject'] = subject
+    msg['From'] = from_addr
+    msg['To'] = to_addr
 
     # Create the HTML part with image CID reference
     html = f'''
@@ -24,6 +21,7 @@ def sendMail(verbiage):
         <p>ISRO has a new launch scheduled.</p>
         <p>{verbiage}</p>
         <img src="cid:myImage">
+        <p>Click <a href="https://lvg.shar.gov.in/VSCREGISTRATION/index.jsp">here</a> to register.</p>
       </body>
     </html>
     '''
@@ -41,5 +39,6 @@ def sendMail(verbiage):
     # Send email via SMTP
     with smtplib.SMTP('smtp.gmail.com', 587) as server:
         server.starttls()
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, msg.as_string())
+        server.login(from_addr, from_pass)
+        server.sendmail(from_addr, to_addr, msg.as_string())
+        no_duplicate_logger.info(f"Email sent to {to_addr} regarding ISRO mission update.")

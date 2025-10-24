@@ -4,19 +4,24 @@ from selenium.webdriver.firefox.options import Options
 import redis
 import schedule
 import time
-import logging
+import argparse
 
 from selenium.webdriver.firefox.service import Service
 
-from loggers import NoDuplicateLogger
+from loggers.NoDuplicateLogger import no_duplicate_logger
 from util import EmailUtils
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-no_duplicate_logger = NoDuplicateLogger.NoDuplicateLogger(logger)
+parser = argparse.ArgumentParser()
+parser.add_argument("--redis-host", type=str, default="", help="Redis host address")
+parser.add_argument("--redis-port", type=int, default=6379, help="Redis port number")
+parser.add_argument("--gmail-username", type=str, default="", help="Gmail username for sending email")
+parser.add_argument("--gmail-password", type=str, default="", help="Gmail password for sending email")
+parser.add_argument("--to-email", type=str, default="", help="Receiver's email")
+args = parser.parse_args()
+
 options = Options()
 service = Service()
-redis_instance = redis.Redis(host="144.24.128.195", port=8082)
+redis_instance = redis.Redis(host=args.__getattribute__("redis_host"), port=args.__getattribute__("redis_port"))
 
 
 def invoke_isro():
@@ -38,11 +43,15 @@ def invoke_isro():
         texts = [mission_text_element.text for mission_text_element in mission_text_elements]
         next_isro_mission = ", ".join(texts)
 
-        if cached_next_isro_mission != next_isro_mission:
+        if cached_next_isro_mission == next_isro_mission:
+            mission_div_element.screenshot("mission.png")
+            EmailUtils.sendMail(next_isro_mission,
+                                "ISRO has a new launch scheduled",
+                                args.__getattribute__("gmail_username"),
+                                args.__getattribute__("gmail_password"),
+                                args.__getattribute__("to_email"))
             cache_data(next_isro_mission)
             cached_next_isro_mission = next_isro_mission
-            mission_div_element.screenshot("mission.png")
-            EmailUtils.sendMail(next_isro_mission)
         else:
             no_duplicate_logger.info("No change in next ISRO mission")
     except Exception as e:
@@ -60,7 +69,7 @@ def cache_data(data):
 
 
 try:
-    seconds = 600
+    seconds = 6
     no_duplicate_logger.info(f"Starting scheduler to invoke ISRO every {seconds} seconds")
     schedule.every(seconds).seconds.do(invoke_isro)
     while True:
