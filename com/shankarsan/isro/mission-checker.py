@@ -17,6 +17,7 @@ parser.add_argument("--redis-port", type=int, default=6379, help="Redis port num
 parser.add_argument("--gmail-username", type=str, default="", help="Gmail username for sending email")
 parser.add_argument("--gmail-password", type=str, default="", help="Gmail password for sending email")
 parser.add_argument("--to-email", type=str, default="", help="Receiver's email")
+parser.add_argument("--poll-interval", type=str, default="", help="Polling interval in seconds")
 args = parser.parse_args()
 
 options = Options()
@@ -69,7 +70,7 @@ def cache_data(data):
 
 
 try:
-    seconds = 6
+    seconds = int(args.__getattribute__("poll_interval"))
     no_duplicate_logger.info(f"Starting scheduler to invoke ISRO every {seconds} seconds")
     schedule.every(seconds).seconds.do(invoke_isro)
     while True:
