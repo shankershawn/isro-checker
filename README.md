@@ -1,15 +1,18 @@
 # ISRO Mission Checker
 
 ## Overview
-This project provides tools to check and monitor ISRO (Indian Space Research Organisation) missions using Python and Selenium. It is designed to automate the process of retrieving and verifying mission data, and can be run in a Docker container for consistency and portability.
+ISRO Mission Checker is a Python-based automation tool for monitoring and verifying Indian Space Research Organisation (ISRO) missions. It leverages Selenium WebDriver for browser automation and includes custom logging and utility modules. The project is fully containerized for easy deployment on both x86_64 and ARM (Raspberry Pi) platforms.
 
 ## Features
-- Automated mission data checking using Selenium WebDriver
-- Custom logging to avoid duplicate log entries
-- Dockerized environment for easy deployment
+- Automated mission data retrieval and verification using Selenium
+- Custom logger to prevent duplicate log entries
+- Email utility for notifications
+- Dockerized for consistent, cross-platform deployment
 
 ## Project Structure
 ```
+Dockerfile
+README.md
 com/
   __init__.py
   shankarsan/
@@ -21,7 +24,9 @@ com/
       loggers/
         __init__.py
         NoDuplicateLogger.py  # Custom logger implementation
-Dockerfile                   # Docker setup for the project
+      util/
+        __init__.py
+        EmailUtils.py         # Utilities for email notifications
 ```
 
 ## Requirements
@@ -33,18 +38,20 @@ Dockerfile                   # Docker setup for the project
 
 ## Setup
 ### Using Docker (Recommended)
-1. Build the Docker image (for Raspberry Pi/ARM):
-   ```sh
-   docker build --build-arg "MAINTAINER=jamesmortensen" --build-arg "REPO=geckodriver-arm-binaries" --build-arg "GECKODRIVER_VERSION=v0.34.0" --build-arg "ARCH=linux-armv7l" -t isro-mission-checker:linux-armv7l .
-   ```
-2. Run the Docker container (local build):
-   ```sh
-   docker run -it shankershawn/isro-mission-checker:linux-armv7l
-   ```
-3. Or run the prebuilt image from Docker Hub:
-   ```sh
-   docker run shankershawn/isro-mission-checker:latest
-   ```
+#### For Raspberry Pi/ARM:
+```sh
+docker build --build-arg "MAINTAINER=jamesmortensen" --build-arg "REPO=geckodriver-arm-binaries" --build-arg "GECKODRIVER_VERSION=v0.34.0" --build-arg "ARCH=linux-armv7l" -t shankershawn/isro-mission-checker:linux-armv7l .
+docker run -it shankershawn/isro-mission-checker:linux-armv7l
+```
+#### For Linux x86_64:
+```sh
+docker build --build-arg "MAINTAINER=mozilla" --build-arg "REPO=geckodriver" --build-arg "GECKODRIVER_VERSION=v0.34.0" --build-arg "ARCH=linux64" -t shankershawn/isro-mission-checker:linux64 .
+docker run -it shankershawn/isro-mission-checker:linux64
+```
+#### Or run the prebuilt image from Docker Hub:
+```sh
+docker run shankershawn/isro-mission-checker:latest
+```
 
 ### Local Setup (Advanced)
 1. Install Python 3.8+ and pip.
@@ -64,6 +71,7 @@ python com/shankarsan/isro/mission-checker.py
 - If you see `NoSuchDriverException`, ensure geckodriver and Firefox are installed and in your PATH.
 - For Docker, make sure to rebuild the image after any changes to the Dockerfile.
 - Run in headless mode if using in a server or CI environment.
+- Check logs for details (custom logger prevents duplicate entries).
 
 ## License
 MIT License
