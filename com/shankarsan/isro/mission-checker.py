@@ -44,7 +44,7 @@ def invoke_isro():
         texts = [mission_text_element.text for mission_text_element in mission_text_elements]
         next_isro_mission = ", ".join(texts)
 
-        if cached_next_isro_mission == next_isro_mission:
+        if cached_next_isro_mission != next_isro_mission:
             mission_div_element.screenshot("mission.png")
             EmailUtils.sendMail(next_isro_mission,
                                 "ISRO has a new launch scheduled",
