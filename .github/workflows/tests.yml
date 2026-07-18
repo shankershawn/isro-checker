@@ -46,8 +46,9 @@ jobs:
         pytest tests/test_no_duplicate_logger.py tests/test_email_utils.py tests/test_edge_cases_clean.py --cov=com --cov-report=xml --cov-report=term-missing -v
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         file: ./coverage.xml
         flags: unittests
         name: codecov-umbrella
