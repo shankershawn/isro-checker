@@ -17,7 +17,7 @@ parser.add_argument("--redis-port", type=int, default=6379, help="Redis port num
 parser.add_argument("--gmail-username", type=str, default="", help="Gmail username for sending email")
 parser.add_argument("--gmail-password", type=str, default="", help="Gmail password for sending email")
 parser.add_argument("--to-email", type=str, default="", help="Receiver's email")
-parser.add_argument("--poll-interval", type=str, default="", help="Polling interval in seconds")
+parser.add_argument("--poll-interval", type=str, default="5", help="Polling interval in seconds")
 args = parser.parse_args()
 
 options = Options()
@@ -30,6 +30,8 @@ def invoke_isro():
     cached_next_isro_mission_bytes = redis_instance.get("next_isro_mission")
     if cached_next_isro_mission_bytes:
         cached_next_isro_mission = cached_next_isro_mission_bytes.decode('utf-8')
+    else:
+        cached_next_isro_mission = ""
 
     options.add_argument("--headless")
     # Uncomment below line for docker build
