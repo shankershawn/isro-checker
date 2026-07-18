@@ -30,5 +30,6 @@ COPY . .
 RUN pip install -r requirements-test.txt && \
     python -m pytest tests/test_email_utils.py tests/test_no_duplicate_logger.py tests/test_edge_cases_clean.py -v --tb=short || echo "Tests completed with status code: $?"
 
-WORKDIR com/shankarsan/isro/
-CMD python mission_checker.py --redis-host $REDIS_HOST --redis-port $REDIS_PORT --gmail-username $GMAIL_USERNAME --gmail-password "$GMAIL_PASSWORD" --to-email $TO_EMAIL --poll-interval $POLL_INTERVAL
+# Execute the script as a module from the project root.
+# This ensures that the 'com' package is correctly found by Python.
+CMD python -m com.shankarsan.isro.mission_checker --redis-host $REDIS_HOST --redis-port $REDIS_PORT --gmail-username $GMAIL_USERNAME --gmail-password "$GMAIL_PASSWORD" --to-email $TO_EMAIL --poll-interval $POLL_INTERVAL
