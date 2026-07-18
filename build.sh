@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Exit on error
 set -e
@@ -9,33 +9,37 @@ set -e
 LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
 echo "Current latest tag is: $LATEST_TAG"
 
-# Parse the version numbers
-IFS='.' read -ra VERSION_PARTS <<< "${LATEST_TAG//v/}"
-MAJOR=${VERSION_PARTS[0]}
-MINOR=${VERSION_PARTS[1]}
-PATCH=${VERSION_PARTS[2]}
+# Parse the version numbers using POSIX-compliant tools
+VERSION_NO_V=$(echo "$LATEST_TAG" | sed 's/v//')
+MAJOR=$(echo "$VERSION_NO_V" | cut -d. -f1)
+MINOR=$(echo "$VERSION_NO_V" | cut -d. -f2)
+PATCH=$(echo "$VERSION_NO_V" | cut -d. -f3)
 
 # Prompt user for version bump type
 echo "Which part of the version do you want to bump?"
-select BUMP_TYPE in "major" "minor" "patch"; do
-  case $BUMP_TYPE in
-    major)
+echo "1) major"
+echo "2) minor"
+echo "3) patch"
+while true; do
+  read -p "Enter your choice (1-3): " choice
+  case $choice in
+    1)
       MAJOR=$((MAJOR + 1))
       MINOR=0
       PATCH=0
       break
       ;;
-    minor)
+    2)
       MINOR=$((MINOR + 1))
       PATCH=0
       break
       ;;
-    patch)
+    3)
       PATCH=$((PATCH + 1))
       break
       ;;
     *)
-      echo "Invalid option. Please choose 1, 2, or 3."
+      echo "Invalid option. Please enter 1, 2, or 3."
       ;;
   esac
 done
@@ -58,6 +62,6 @@ docker build \
   --build-arg "REPO=geckodriver-arm-binaries" \
   --build-arg "GECKODRIVER_VERSION=v0.34.0" \
   --build-arg "ARCH=linux-armv7l" \
-  -t shankershawn/isro-mission-checker:"${NEW_TAG}-linux-armv7l" .
+  -t "shankershawn/isro-mission-checker:${NEW_TAG}-linux-armv7l" .
 
 echo "Successfully built Docker image: shankershawn/isro-mission-checker:${NEW_TAG}-linux-armv7l"
