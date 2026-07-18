@@ -3,7 +3,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 
-from loggers.NoDuplicateLogger import no_duplicate_logger
+from com.shankarsan.isro.loggers.NoDuplicateLogger import no_duplicate_logger
 
 
 def sendMail(verbiage, subject, from_addr, from_pass, to_addr):

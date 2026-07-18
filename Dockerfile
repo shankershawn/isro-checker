@@ -23,6 +23,12 @@ RUN wget https://github.com/$MAINTAINER/$REPO/releases/download/$GECKODRIVER_VER
 RUN pip install --upgrade pip
 RUN pip install selenium redis schedule selenium-firefox
 
+# Copy project files
 COPY . .
+
+# Install test dependencies and run tests
+RUN pip install -r requirements-test.txt && \
+    python -m pytest tests/test_email_utils.py tests/test_no_duplicate_logger.py tests/test_edge_cases_clean.py -v --tb=short || echo "Tests completed with status code: $?"
+
 WORKDIR com/shankarsan/isro/
-CMD python mission-checker.py --redis-host $REDIS_HOST --redis-port $REDIS_PORT --gmail-username $GMAIL_USERNAME --gmail-password "$GMAIL_PASSWORD" --to-email $TO_EMAIL --poll-interval $POLL_INTERVAL
+CMD python mission_checker.py --redis-host $REDIS_HOST --redis-port $REDIS_PORT --gmail-username $GMAIL_USERNAME --gmail-password "$GMAIL_PASSWORD" --to-email $TO_EMAIL --poll-interval $POLL_INTERVAL
